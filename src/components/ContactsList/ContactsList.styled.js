@@ -22,8 +22,9 @@ export const Button = styled.button`
   border: none;
   font-weight: 600;
   transition: all 300ms linear;
+  background-color: #66CDAA;
   &:hover {
     scale: 1.1;
-    background-color: #00a86d;
+    background-color: #3cb371;
   }
 `;

@@ -1,5 +1,6 @@
 // import { nanoid } from 'nanoid';
-import Notiflix from 'notiflix';
+import { toast } from 'react-toastify';
+// import Notiflix from 'notiflix';
 import React from 'react';
 import { ContactList } from './ContactsList/ContactsList';
 import { ContactForm } from './ContactsForm/ContactForm';
@@ -16,19 +17,31 @@ export class App extends React.Component {
     ],
     filter: '',
   };
-// /Додаємо контакт
+  componentDidMount() {
+    const contacts = JSON.parse(window.localStorage.getItem('contact'));
+    if (contacts && contacts.length) {
+      this.setState({ contacts });
+    }
+  }
+  componentDidUpdate(_prevProp, prevState) {
+    if (prevState.length !== this.state.contacts.length) {
+      window.localStorage.setItem(
+        'contact',
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
+  // /Додаємо контакт
   addNewContact = newContact => {
     const { contacts } = this.state;
     const checkContact = contacts.find(
       contact => contact.name === newContact.name
     );
     checkContact
-      ? Notiflix.Notify.failure(`${newContact.name} is already in contact`)
+      ? toast.warning(`${newContact.name} is already in contact`)
       : this.setState(prev => ({
           contacts: [...prev.contacts, newContact],
         }));
-
-
   };
   //вводимо в інтуп фільтра
   hendleFilterInput = value => {
@@ -49,9 +62,7 @@ export class App extends React.Component {
     this.setState(prev => ({
       contacts: prev.contacts.filter(contact => contact.id !== id),
     }));
-    Notiflix.Notify.success(
-      `${name} Was successfully deleted from your Phonebook`
-    );
+    toast.success(`Contact ${name} successfully deleted ;)`);
   };
   render() {
     const { filter } = this.state;
